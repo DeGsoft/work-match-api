@@ -1,5 +1,7 @@
-const { User,Address,City,State,Country } = require('./db.service.js');
+const { User, Address, City, State, Country } = require('./db.service.js');
 const helper = require('../utils/helper.util.js');
+const role = require('../services/role.service.js');
+const jobState = require('../services/jobState.service.js');
 
 async function read(id, query) {
   const page = query.page || 1;
@@ -14,90 +16,94 @@ async function read(id, query) {
     data,
     meta,
   };
-  if(result.data.length===0){
-    const jobs =[ {
-      id:"ElsuperAdmin",
-      password:"topSecretPassword",
-      name:"Miguel Mendez Gonzales",
-      deleted:false,
-      age:23,
-      biography:"I am the admin user!!",
-      mail:"email@email.com",
-      phone:25487,
-      rate:null,
-      role:1,
-      image:"",
-      premium:true,
-      jobState:4
-    },{
-      id:"ElPrimerUsuario",
-      password:"topSecretPassword2",
-      name:"José Biden Rodriguez",
-      deleted:false,
-      age:31,
-      biography:"I like apples!!",
-      mail:"email2@email.com",
-      phone:2145,
-      rate:null,
-      role:2,
-      image:"",
-      premium:false,
-      jobState:1
+  if (!result.data || !result.data.length || result.data.length === 0) {
+
+    await role.read(1, { page: 1 });
+    await jobState.read(1, { page: 1 });
+    
+    const jobs = [{
+      id: "ElsuperAdmin",
+      password: "topSecretPassword",
+      name: "Miguel Mendez Gonzales",
+      deleted: false,
+      age: 23,
+      biography: "I am the admin user!!",
+      mail: "email@email.com",
+      phone: 25487,
+      rate: null,
+      role: 1,
+      image: "",
+      premium: true,
+      jobState: 4
+    }, {
+      id: "ElPrimerUsuario",
+      password: "topSecretPassword2",
+      name: "José Biden Rodriguez",
+      deleted: false,
+      age: 31,
+      biography: "I like apples!!",
+      mail: "email2@email.com",
+      phone: 2145,
+      rate: null,
+      role: 2,
+      image: "",
+      premium: false,
+      jobState: 1
     }
-  ];
-    var i=0
-    while(i<jobs.length){
-       await User.create(jobs[i]);
+    ];
+    var i = 0
+    while (i < jobs.length) {
+      await User.create(jobs[i]);
       i++
     }
-    data=await User.findAll();
-     result = {
+    data = await User.findAll();
+    result = {
       data,
       meta,
     };
     return result
-}
+  }
 
   return result;
 }
 
-async function readUserAddres(id,query) {
+async function readUserAddres(id, query) {
   const page = query.page || 1;
   const meta = { page };
   const options = helper.findOptions(page, query);
-    var data = await User.findAll({
-    include : [
-      { 
-        model: Address, 
-        where:{user:id},
+  var data = await User.findAll({
+    include: [
+      {
+        model: Address,
+        where: { user: id },
         required: true,
-        extends:[
+        extends: [
           {
-            model: City, 
+            model: City,
             required: true,
-            extends:[
+            extends: [
               {
-                model: State, 
+                model: State,
                 required: true,
-                extends:[
+                extends: [
                   {
-                    model: Country, 
+                    model: Country,
                     required: true,
                   }
                 ]
               }
-            ]           
+            ]
           },
-          
+
         ]
-        }
+      }
     ],
   })
-        var result = {
-          data,
-          meta,
-        };
-        
+  var result = {
+    data,
+    meta,
+  };
+
   return result;
 }
 

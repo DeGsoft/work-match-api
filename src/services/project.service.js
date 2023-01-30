@@ -1,5 +1,7 @@
-const { Project,Bid,User,JobState } = require('./db.service.js');
+const { Project, Bid, User, JobState } = require('./db.service.js');
 const helper = require('../utils/helper.util.js');
+const category = require('./category.service.js');
+const user = require('./user.service.js');
 
 async function read(id, query) {
   const page = query.page || 1;
@@ -15,131 +17,135 @@ async function read(id, query) {
     meta,
   };
 
-  if(result.data.length===0){
-    const jobs =[ {
-      deleted:false,
-      description:"una description",
-      category:2,
-      status:false,
-      budget:25,
-      agreement:false,
-      owner:"ElsuperAdmin",
-      bidder:"ElPrimerUsuario",
-      image:"",
-      estimated:2
-    },{
-      deleted:false,
-      description:"otra",
-      category:2,
-      status:false,
-      budget:30,
-      agreement:false,
-      owner:"ElsuperAdmin",
-      bidder:"ElPrimerUsuario",
-      image:"",
-      estimated:2
+  if (!result.data || !result.data.length || result.data.length === 0) {
+
+    await category.read(1, { page: 1 });
+    await user.read("ElsuperAdmin", { page: 1 });
+
+    const jobs = [{
+      deleted: false,
+      description: "una description",
+      category: 2,
+      status: false,
+      budget: 25,
+      agreement: false,
+      owner: "ElsuperAdmin",
+      bidder: "ElPrimerUsuario",
+      image: "",
+      estimated: 2
+    }, {
+      deleted: false,
+      description: "otra",
+      category: 2,
+      status: false,
+      budget: 30,
+      agreement: false,
+      owner: "ElsuperAdmin",
+      bidder: "ElPrimerUsuario",
+      image: "",
+      estimated: 2
     },
     {
-      deleted:false,
-      description:"otra descripcion",
-      category:1,
-      status:false,
-      budget:48,
-      agreement:false,
-      owner:"ElPrimerUsuario",
-      bidder:"ElsuperAdmin",
-      image:"",
-      estimated:3
+      deleted: false,
+      description: "otra descripcion",
+      category: 1,
+      status: false,
+      budget: 48,
+      agreement: false,
+      owner: "ElPrimerUsuario",
+      bidder: "ElsuperAdmin",
+      image: "",
+      estimated: 3
     }
-  ];
+    ];
 
-  const bids =[ {
-    project:1,
-    user:"ElsuperAdmin",
-    deleted:false,
-  },{
-    project:2,
-    user:"ElsuperAdmin",
-    deleted:false,
-  },
-  {
-    project:3,
-    user:"ElPrimerUsuario",
-    deleted:false,
-  }
-];
+    const bids = [{
+      project: 1,
+      user: "ElsuperAdmin",
+      deleted: false,
+    }, {
+      project: 2,
+      user: "ElsuperAdmin",
+      deleted: false,
+    },
+    {
+      project: 3,
+      user: "ElPrimerUsuario",
+      deleted: false,
+    }
+    ];
 
-    var i=0
-    while(i<jobs.length){
-       await Project.create(jobs[i]);
-       await Bid.create(bids[i]);      
+    var i = 0
+    while (i < jobs.length) {
+      await Project.create(jobs[i]);
+      await Bid.create(bids[i]);
       i++
     }
-    
-  data=await Bid.findAll();
-   result = {
-    data,
-    meta,
-  };
-    data=await Project.findAll();
-     result = {
+
+    data = await Bid.findAll();
+    result = {
+      data,
+      meta,
+    };
+    data = await Project.findAll();
+    result = {
       data,
       meta,
     };
     return result
-}
+  }
 
   return result;
 }
 
-async function readByUser(id,query) {
+async function readByUser(id, query) {
   const page = query.page || 1;
   const meta = { page };
   const options = helper.findOptions(page, query);
- 
-  var  data = await Project.findAll({
-    where:{owner:id},
-    include : [
-      { 
-        model: User, 
+
+  var data = await Project.findAll({
+    where: { owner: id },
+    include: [
+      {
+        model: User,
         required: true,
-        where: {id:id}
-        }
+        where: { id: id }
+      }
     ]
   })
-        var result = {
-          data,
-          meta,
-        };
+  var result = {
+    data,
+    meta,
+  };
   return result;
 }
 
-async function readByPostulations(id,query) {
+async function readByPostulations(id, query) {
   const page = query.page || 1;
   const meta = { page };
   const options = helper.findOptions(page, query);
- 
-  var  data = await JobState.findAll({
-    
-    include : [
-      { 
-        model: User, 
+
+  var data = await JobState.findAll({
+
+    include: [
+      {
+        model: User,
         required: true,
-        where: {id:id},
-        include:[
+        where: { id: id },
+        include: [
           {
-            model: Project, 
+            model: Project,
             required: true,
-           
+
           }
         ]
-        }
+      }
     ]
   })
-        var result = {
-          data,
-          meta,
-        };
+  var result = {
+    data,
+    meta,
+  };
   return result;
 }
 
@@ -199,17 +205,17 @@ async function create(project) {
   //   message = 'project created successfully';
   // }
   // return { message };
-  
 
 
-  var data=await Project.create(project);
+
+  var data = await Project.create(project);
 
   const bids = {
-    project:data.id,
-    user:project.owner,
-    deleted:project.deleted,
+    project: data.id,
+    user: project.owner,
+    deleted: project.deleted,
   }
-  await Bid.create(bids); 
+  await Bid.create(bids);
   return data
 }
 
