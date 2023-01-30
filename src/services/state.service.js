@@ -1,5 +1,6 @@
 const { State } = require('./db.service.js');
 const helper = require('../utils/helper.util.js');
+const country = require('../services/country.service.js');
 
 async function read(id, query) {
   const page = query.page || 1;
@@ -13,50 +14,53 @@ async function read(id, query) {
     data,
     meta,
   };
-  if(result.data.length===0){
-    const jobs =[ {
-      "country":1,
-      "name":"Buenos Aires",
-      "deleted":false
+  if (!result.data || !result.data.length || result.data.length === 0) {
+
+    await country.read(1, { page: 1 });
+
+    const jobs = [{
+      "country": 1,
+      "name": "Buenos Aires",
+      "deleted": false
     },
     {
-      "country":1,
-      "name":"Catamarca",
-      "deleted":false
+      "country": 1,
+      "name": "Catamarca",
+      "deleted": false
     },
     {
-      "country":2,
-      "name":"Aragua",
-      "deleted":false
+      "country": 2,
+      "name": "Aragua",
+      "deleted": false
     },
     {
-      "country":2,
-      "name":"Zulia",
-      "deleted":false
+      "country": 2,
+      "name": "Zulia",
+      "deleted": false
     },
     {
-      "country":3,
-      "name":"Antioquia",
-      "deleted":false
+      "country": 3,
+      "name": "Antioquia",
+      "deleted": false
     },
     {
-      "country":3,
-      "name":"Magdalena",
-      "deleted":false
+      "country": 3,
+      "name": "Magdalena",
+      "deleted": false
     },
     ];
-    var i=0
-    while(i<jobs.length){
-       await State.create(jobs[i]);
+    var i = 0
+    while (i < jobs.length) {
+      await State.create(jobs[i]);
       i++
     }
-     data=await State.findAll();
-     result = {
+    data = await State.findAll();
+    result = {
       data,
       meta,
     };
     return result
-}
+  }
   return result;
 }
 

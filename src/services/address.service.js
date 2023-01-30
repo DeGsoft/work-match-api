@@ -1,5 +1,7 @@
 const { Address } = require('./db.service.js');
 const helper = require('../utils/helper.util.js');
+const city = require('../services/city.service.js');
+const user = require('./user.service.js');
 
 async function read(id, query) {
   const page = query.page || 1;
@@ -14,31 +16,35 @@ async function read(id, query) {
     meta,
   };
 
-  if(result.data.length===0){
-    const jobs =[ {
-      city:1,
-      user:"ElsuperAdmin",
-      description:"Avenida siempre viva #21-1 ",
-      deleted:false,
-    },{
-      city:4,
-      user:"ElPrimerUsuario",
-      description:"La calle del Banco #33-29",
-      deleted:false,
+  if (!result.data || !result.data.length || result.data.length === 0) {
+
+    await city.read(1, { page: 1 });
+    await user.read("ElsuperAdmin", { page: 1 });
+    
+    const jobs = [{
+      city: 1,
+      user: "ElsuperAdmin",
+      description: "Avenida siempre viva #21-1 ",
+      deleted: false,
+    }, {
+      city: 4,
+      user: "ElPrimerUsuario",
+      description: "La calle del Banco #33-29",
+      deleted: false,
     }
-  ];
-    var i=0
-    while(i<jobs.length){
-       await Address.create(jobs[i]);
+    ];
+    var i = 0
+    while (i < jobs.length) {
+      await Address.create(jobs[i]);
       i++
     }
-    data=await Address.findAll();
-     result = {
+    data = await Address.findAll();
+    result = {
       data,
       meta,
     };
     return result
-}
+  }
   return result;
 }
 

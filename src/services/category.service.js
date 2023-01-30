@@ -13,8 +13,9 @@ async function read(id, query) {
     data,
     meta,
   };
-  if(result.data.length===0){
-    const jobs =[  {
+
+  if (!result.data || !result.data.length || result.data.length === 0) {
+    const jobs = [{
       name: 'Carpintería',
       image: 'https://cdn-icons-png.flaticon.com/512/1973/1973946.png',
       description:
@@ -106,19 +107,19 @@ async function read(id, query) {
       deleted: false,
       parent: 0,
     },
-  ];
-    var i=0
-    while(i<jobs.length){
-       await Category.create(jobs[i]);
+    ];
+    var i = 0
+    while (i < jobs.length) {
+      await Category.create(jobs[i]);
       i++
     }
-    data=await Category.findAll();
-     result = {
+    data = await Category.findAll();
+    result = {
       data,
       meta,
     };
     return result
-}
+  }
   return result;
 }
 

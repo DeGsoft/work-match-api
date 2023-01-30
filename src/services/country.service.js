@@ -13,31 +13,31 @@ async function read(id, query) {
     data,
     meta,
   };
-  if(result.data.length===0){
-    const jobs =[ {
-      "name":"Argentina",
-      "deleted":false
-    },{
-      "name":"Venezuela",
-      "deleted":false
+  if (!result.data || !result.data.length || result.data.length === 0) {
+    const jobs = [{
+      "name": "Argentina",
+      "deleted": false
+    }, {
+      "name": "Venezuela",
+      "deleted": false
     },
     {
-      "name":"Colombia",
-      "deleted":false
+      "name": "Colombia",
+      "deleted": false
     },
     ];
-    var i=0
-    while(i<jobs.length){
-       await Country.create(jobs[i]);
+    var i = 0
+    while (i < jobs.length) {
+      await Country.create(jobs[i]);
       i++
     }
-     data=await Country.findAll();
-     result = {
+    data = await Country.findAll();
+    result = {
       data,
       meta,
     };
     return result
-}
+  }
   return result;
 }
 
