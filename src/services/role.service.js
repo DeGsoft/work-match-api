@@ -8,33 +8,33 @@ async function read(id, query) {
 
   const options = helper.findOptions(page, query);
 
-  var data = id ? await Role.findByPk(id) : await Role.findAll(options);
+  var data = id ? await Role.findAll({where:{id:id} }): await Role.findAll(options);
   var result = {
     data,
     meta,
   };
-  if (!result.data || !result.data.length || result.data.length === 0) {
-    const jobs = [{
-      "id": 1,
-      "name": "admin",
-      "deleted": false
-    }, {
-      "id": 2,
-      "name": "user",
-      "deleted": false
-    }
+  if(!result.data || !result.data.length || result.data.length === 0){
+      const jobs =[ {
+        "id":1,
+        "name":"admin",
+        "deleted":false
+      },{
+        "id":2,
+        "name":"user",
+        "deleted":false
+      }
     ];
-    var i = 0
-    while (i < jobs.length) {
-      await Role.create(jobs[i]);
-      i++
-    }
-    data = await Role.findAll();
-    result = {
-      data,
-      meta,
-    };
-    return result
+      var i=0
+      while(i<jobs.length){
+         await Role.create(jobs[i]);
+        i++
+      }
+       data=await Role.findAll();
+       result = {
+        data,
+        meta,
+      };
+      return result
   }
   return result;
 }

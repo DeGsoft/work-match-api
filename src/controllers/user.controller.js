@@ -17,6 +17,16 @@ async function readUserAddres(req, res, next) {
   }
 }
 
+async function readUsername(req, res, next) {
+  try {
+    res.status(200).send(await user.getUserName(req.params.username));
+    console.log(req.params.username);
+  } catch (err) {
+    console.error(`Error while taking user`, err.message);
+    next(err);
+  }
+}
+
 async function create(req, res, next) {
   try {
     res.status(201).send(await user.create(req.body));
@@ -35,6 +45,15 @@ async function update(req, res, next) {
   }
 }
 
+async function updateRate(req, res, next) {
+  try {
+    res.status(201).send(await user.update(req.body));
+  } catch (err) {
+    console.error(`Error while updating user's rate`, err.message);
+    next(err);
+  }
+}
+
 async function remove(req, res, next) {
   try {
     res.status(201).send(await user.remove(req.params.id));
@@ -44,10 +63,22 @@ async function remove(req, res, next) {
   }
 }
 
+async function reactivateAccount(req, res, next) {
+  try {
+    res.status(201).send(await user.reactivateAccount(req.params.id));
+  } catch (err) {
+    console.error(`Error while reactiveAccount`, err.message);
+    next(err);
+  }
+}
+
 module.exports = {
   read,
   create,
   update,
+  updateRate,
   remove,
-  readUserAddres
+  readUserAddres,
+  reactivateAccount,
+  readUsername,
 };

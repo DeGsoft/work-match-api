@@ -8,14 +8,13 @@ async function read(id, query) {
 
   const options = helper.findOptions(page, query);
 
-  var data = id ? await Category.findByPk(id) : await Category.findAll(options);
+  var data = id ? await Category.findAll({where:{id:id} }) : await Category.findAll(options);
   var result = {
     data,
     meta,
   };
-
-  if (!result.data || !result.data.length || result.data.length === 0) {
-    const jobs = [{
+  if(!result.data || !result.data.length || result.data.length === 0){
+    const jobs =[  {
       name: 'Carpintería',
       image: 'https://cdn-icons-png.flaticon.com/512/1973/1973946.png',
       description:
@@ -107,19 +106,19 @@ async function read(id, query) {
       deleted: false,
       parent: 0,
     },
-    ];
-    var i = 0
-    while (i < jobs.length) {
-      await Category.create(jobs[i]);
+  ];
+    var i=0
+    while(i<jobs.length){
+       await Category.create(jobs[i]);
       i++
     }
-    data = await Category.findAll();
-    result = {
+    data=await Category.findAll();
+     result = {
       data,
       meta,
     };
     return result
-  }
+}
   return result;
 }
 
