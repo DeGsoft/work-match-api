@@ -1,6 +1,8 @@
-const { Address } = require('./db.service.js');
+const { Address, User } = require('./db.service.js');
 const helper = require('../utils/helper.util.js');
-const city = require('../services/city.service.js');
+//const city = require('../services/city.service.js');
+const state = require('../services/state.service.js');
+const country = require('../services/country.service.js');
 const user = require('./user.service.js');
 
 async function read(id, query) {
@@ -10,40 +12,75 @@ async function read(id, query) {
 
   const options = helper.findOptions(page, query);
 
-  var data = id ? await Address.findByPk(id) : await Address.findAll(options);
+  var data = id
+    ? await Address.findAll({ where: { id: id } })
+    : await Address.findAll(options);
+  var data2 = await User.findAll({ limit: 1, options });
   var result = {
     data,
     meta,
   };
 
   if (!result.data || !result.data.length || result.data.length === 0) {
-
-    await city.read(1, { page: 1 });
-    await user.read("ElsuperAdmin", { page: 1 });
-    
-    const jobs = [{
-      city: 1,
-      user: "ElsuperAdmin",
-      description: "Avenida siempre viva #21-1 ",
-      deleted: false,
-    }, {
-      city: 4,
-      user: "ElPrimerUsuario",
-      description: "La calle del Banco #33-29",
-      deleted: false,
+    // await country.read(1, { page: 1 });
+    await state.read(1, { page: 1 });
+    //await city.read(1, { page: 1 });
+    if (!data2 || !data2.length || data2.length === 0) {
+      await user.read(1, { page: 1 });
     }
+    const jobs = [
+      {
+        state: 1,
+        user: 1,
+        description: 'Avenida siempre viva #21-1 ',
+      },
+      {
+        state: 2,
+        user: 2,
+        description: 'La calle 9',
+      },
+      {
+        state: 3,
+        user: 3,
+        description: 'La calle 1234',
+      },
+      {
+        state: 4,
+        user: 4,
+        description: 'La calle del Banco #33-29',
+      },
+      {
+        state: 5,
+        user: 5,
+        description: 'Avenida siempre viva #21-1 ',
+      },
+      {
+        state: 6,
+        user: 6,
+        description: 'La calle 9',
+      },
+      {
+        state: 7,
+        user: 7,
+        description: 'La calle 1234',
+      },
+      {
+        state: 8,
+        user: 8,
+        description: 'La calle del Banco #33-29',
+      },
     ];
-    var i = 0
+    var i = 0;
     while (i < jobs.length) {
       await Address.create(jobs[i]);
-      i++
+      i++;
     }
     data = await Address.findAll();
     result = {
       data,
       meta,
     };
-    return result
+    return result;
   }
   return result;
 }
@@ -104,8 +141,6 @@ async function create(address) {
   //   message = 'project created successfully';
   // }
   // return { message };
-
-
 
   return Address.create(address);
 }

@@ -1,36 +1,36 @@
-const jobState = require('../services/jobState.service.js');
+const role = require('../services/jobState.service.js');
 
 async function read(req, res, next) {
   try {
-    res.status(200).send(await jobState.read(req.params.id, req.query));
+    res.status(200).send(await role.read(req.params.id, req.query));
   } catch (err) {
-    console.error(`Error while getting jobState`, err.message);
+    console.error(`Error while getting role`, err.message);
     next(err);
   }
 }
 
 async function create(req, res, next) {
   try {
-    res.status(201).send(await jobState.create(req.body));
+    res.status(201).send(await role.create(req.body));
   } catch (err) {
-    console.error(`Error while creating jobState`, err.message);
+    console.error(`Error while creating role`, err.message);
     next(err);
   }
 }
 
 async function update(req, res, next) {
   try {
-    res.status(201).send(await jobState.update(req.body));
+    res.status(201).send(await role.update(req.body));
   } catch (err) {
-    console.error(`Error while updating jobState`, err.message);
+    console.error(`Error while updating role`, err.message);
     next(err);
   }
 }
 async function remove(req, res, next) {
   try {
-    res.status(201).send(await jobState.remove(req.params.id));
+    res.status(201).send(await role.remove(req.params.id));
   } catch (err) {
-    console.error(`Error while deleting jobState`, err.message);
+    console.error(`Error while deleting role`, err.message);
     next(err);
   }
 }

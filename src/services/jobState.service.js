@@ -8,44 +8,44 @@ async function read(id, query) {
 
   const options = helper.findOptions(page, query);
 
-  var data = id ? await JobState.findByPk(id) : await JobState.findAll(options);
+  var data = id ? await JobState.findAll({where:{id:id} }): await JobState.findAll(options);
   var result = {
     data,
     meta,
   };
-  if (!result.data || !result.data.length || result.data.length === 0) {
-    const jobs = [{
-      "id": 1,
-      "name": "Postulado",
-      "deleted": false
-    }, {
-      "id": 2,
-      "name": "Aceptado",
-      "deleted": false
-    },
-    {
-      "id": 3,
-      "name": "Rechazado",
-      "deleted": false
-    },
-    {
-      "id": 4,
-      "name": "No aplica",
-      "deleted": false
-    },
-
+  if(!result.data || !result.data.length || result.data.length === 0){
+      const jobs =[ {
+        "id":1,
+        "name":"Postulado",
+        "deleted":false
+      },{
+        "id":2,
+        "name":"Aceptado",
+        "deleted":false
+      },
+      {
+        "id":3,
+        "name":"Rechazado",
+        "deleted":false
+      },
+      {
+        "id":4,
+        "name":"No aplica",
+        "deleted":false
+      },
+      
     ];
-    var i = 0
-    while (i < jobs.length) {
-      await JobState.create(jobs[i]);
-      i++
-    }
-    data = await JobState.findAll();
-    result = {
-      data,
-      meta,
-    };
-    return result
+      var i=0
+      while(i<jobs.length){
+         await JobState.create(jobs[i]);
+        i++
+      }
+       data=await JobState.findAll();
+       result = {
+        data,
+        meta,
+      };
+      return result
   }
   return result;
 }

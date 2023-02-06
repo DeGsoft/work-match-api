@@ -8,36 +8,36 @@ async function read(id, query) {
 
   const options = helper.findOptions(page, query);
 
-  var data = id ? await Country.findByPk(id) : await Country.findAll(options);
+  var data = id ? await Country.findAll({where:{id:id} }) : await Country.findAll(options);
   var result = {
     data,
     meta,
   };
-  if (!result.data || !result.data.length || result.data.length === 0) {
-    const jobs = [{
-      "name": "Argentina",
-      "deleted": false
-    }, {
-      "name": "Venezuela",
-      "deleted": false
+  if(!result.data || !result.data.length || result.data.length === 0){
+    const jobs =[ {
+      "name":"Argentina",
+      "deleted":false
+    }/*,{
+      "name":"Venezuela",
+      "deleted":false
     },
     {
-      "name": "Colombia",
-      "deleted": false
-    },
+      "name":"Colombia",
+      "deleted":false
+    }*/,
     ];
-    var i = 0
-    while (i < jobs.length) {
-      await Country.create(jobs[i]);
+    var i=0
+    while(i<jobs.length){
+       await Country.create(jobs[i]);
       i++
     }
-    data = await Country.findAll();
-    result = {
+     data=await Country.findAll();
+     result = {
       data,
       meta,
     };
     return result
-  }
+}
   return result;
 }
 

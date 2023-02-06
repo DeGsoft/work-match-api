@@ -1,6 +1,5 @@
 const { City } = require('./db.service.js');
 const helper = require('../utils/helper.util.js');
-const state = require('../services/state.service.js');
 
 async function read(id, query) {
   const page = query.page || 1;
@@ -9,88 +8,85 @@ async function read(id, query) {
 
   const options = helper.findOptions(page, query);
 
-  var data = id ? await City.findByPk(id) : await City.findAll(options);
+  var data = id ? await City.findAll({where:{id:id} }) : await City.findAll(options);
   var result = {
     data,
     meta,
   };
-  if (!result.data || !result.data.length || result.data.length === 0) {
-
-    await state.read(1, { page: 1 });
-    
-    const jobs = [{
-      "state": 1,
-      "name": "Banfield",
-      "deleted": false
+  if(!result.data || !result.data.length || result.data.length === 0){
+    const jobs =[ {
+      "state":1,
+      "name":"Banfield",
+      "deleted":false
     },
     {
-      "state": 1,
-      "name": "Lanús",
-      "deleted": false
+      "state":1,
+      "name":"Lanús",
+      "deleted":false
     },
     {
-      "state": 2,
-      "name": "Antofagasta de la Sierra",
-      "deleted": false
+      "state":2,
+      "name":"Antofagasta de la Sierra",
+      "deleted":false
     },
     {
-      "state": 2,
-      "name": "El Rodeo",
-      "deleted": false
+      "state":2,
+      "name":"El Rodeo",
+      "deleted":false
+    },
+    /*{
+      "state":3,
+      "name":" Bolívar",
+      "deleted":false
     },
     {
-      "state": 3,
-      "name": " Bolívar",
-      "deleted": false
+      "state":3,
+      "name":"Libertador",
+      "deleted":false
     },
     {
-      "state": 3,
-      "name": "Libertador",
-      "deleted": false
+      "state":4,
+      "name":"Cabimas",
+      "deleted":false
     },
     {
-      "state": 4,
-      "name": "Cabimas",
-      "deleted": false
+      "state":4,
+      "name":"Maracaibo",
+      "deleted":false
     },
     {
-      "state": 4,
-      "name": "Maracaibo",
-      "deleted": false
+      "state":5,
+      "name":" Remedios",
+      "deleted":false
     },
     {
-      "state": 5,
-      "name": " Remedios",
-      "deleted": false
+      "state":5,
+      "name":"Frontino",
+      "deleted":false
     },
     {
-      "state": 5,
-      "name": "Frontino",
-      "deleted": false
+      "state":6,
+      "name":"Nueva Granada",
+      "deleted":false
     },
     {
-      "state": 6,
-      "name": "Nueva Granada",
-      "deleted": false
-    },
-    {
-      "state": 6,
-      "name": "Santa Marta",
-      "deleted": false
-    },
+      "state":6,
+      "name":"Santa Marta",
+      "deleted":false
+    },*/
     ];
-    var i = 0
-    while (i < jobs.length) {
-      await City.create(jobs[i]);
+    var i=0
+    while(i<jobs.length){
+       await City.create(jobs[i]);
       i++
     }
-    data = await City.findAll();
-    result = {
+     data=await City.findAll();
+     result = {
       data,
       meta,
     };
     return result
-  }
+}
   return result;
 }
 
