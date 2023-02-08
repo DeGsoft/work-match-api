@@ -1,5 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-.env
+.env*
 
 # dependencies
 /node_modules
@@ -25,16 +25,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
-.env*
 .env*.local
+
 # vercel
 .vercel
-test
-node_modules
-.dockerignore
-docker-compose.yml
-Dockerfile
-*.sh
-*.zip
-*.rar
-package-lock.json
