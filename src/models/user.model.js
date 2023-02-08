@@ -15,6 +15,7 @@ module.exports = (sequelize) => {
       username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -59,8 +60,13 @@ module.exports = (sequelize) => {
       },
       image: {
         type: DataTypes.STRING,
+        defaultValue: 'https://cdn-icons-png.flaticon.com/512/64/64572.png',
       },
       premium: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      blocked: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },

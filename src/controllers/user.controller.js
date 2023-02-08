@@ -18,11 +18,12 @@ async function readUserAddres(req, res, next) {
 }
 
 async function readUsername(req, res, next) {
+  const { username } = req.params;
   try {
-    res.status(200).send(await user.getUserName(req.params.username));
-    console.log(req.params.username);
+    const data = await user.getUserName(username);
+    if (!data.length) return res.status(200).send(data);
   } catch (err) {
-    console.error(`Error while taking user`, err.message);
+    res.status(404).send('Something went wrong!');
     next(err);
   }
 }
@@ -38,12 +39,21 @@ async function create(req, res, next) {
 
 async function update(req, res, next) {
   try {
-    res.status(201).send(await user.update(req.body));
+    res.status(201).send(await user.update(req.body, req.params.id));
   } catch (err) {
     console.error(`Error while updating user`, err.message);
     next(err);
   }
 }
+
+// async function update(req, res, next) {
+//   try {
+//     const { id } = req.params;
+//     res.status(201).send(await user.update(req.body, id));
+//   } catch (err) {
+//     console.error(`Error while updating user`, err.message);
+//     next(err);
+//   }
 
 async function updateRate(req, res, next) {
   try {
